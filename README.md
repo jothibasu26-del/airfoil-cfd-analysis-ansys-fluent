@@ -69,9 +69,7 @@ around the airfoil to capture the flow gradients and near-wall behavior.
 
 ### Mesh Overview
 
-![Computational Mesh](mesh/<img width="1834" height="909" alt="image" src="https://github.com/user-attachments/assets/76272c00-b676-4bcf-8497-0c3c5396a600" />
-)
-
+![Computational Mesh](mesh/Screenshot 2026-09-14 161430.png)
 ### Near-Airfoil Mesh
 
 ![Near-Airfoil Mesh](mesh/mesh_near_airfoil.png)
