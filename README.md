@@ -4,18 +4,18 @@
 
 A 2D CFD study of turbulent flow over a NACA 0012 airfoil using ANSYS Fluent.
 The simulation investigates the aerodynamic behavior of the airfoil at an angle
-of attack of 10° and evaluates its performance through surface pressure,
-lift, and drag characteristics.
+of attack of 10° and evaluates its aerodynamic performance through pressure,
+velocity, lift, and drag characteristics.
 
 The project is based on a canonical turbulent airfoil-flow problem from
 Cornell University's engineering simulation coursework, with emphasis on
-CFD setup, turbulence modeling, post-processing, and validation against
-experimental data.
+CFD setup, turbulence modeling, numerical solution, post-processing, and
+validation against experimental data.
 
 ## Problem Definition
 
 The flow around a NACA 0012 airfoil is simulated at an angle of attack of 10°.
-The resulting flow field and aerodynamic quantities are analyzed and compared
+The resulting flow field and aerodynamic coefficients are analyzed and compared
 with experimental data.
 
 ### Operating Conditions
@@ -32,120 +32,167 @@ with experimental data.
 ## Objectives
 
 - Set up a 2D turbulent external-flow simulation in ANSYS Fluent.
-- Analyze the velocity and pressure fields around the airfoil.
+- Analyze velocity and pressure fields around the NACA 0012 airfoil.
+- Evaluate turbulent flow characteristics using turbulent kinetic energy.
 - Obtain the surface pressure coefficient distribution.
 - Determine the lift and drag coefficients.
-- Compare the numerical results with experimental data provided by NASA.
+- Compare the numerical pressure distribution with experimental data.
 
 ## CFD Methodology
 
 The simulation follows a standard external-aerodynamics CFD workflow:
 
 1. NACA 0012 geometry preparation
-2. Computational-domain and mesh generation
-3. Definition of fluid properties and boundary conditions
-4. Turbulence-model selection
-5. Numerical solution of the governing equations using ANSYS Fluent
-6. Convergence monitoring
-7. Post-processing of the flow field and aerodynamic quantities
-8. Comparison with experimental data
+2. Computational-domain definition
+3. Mesh generation and near-airfoil refinement
+4. Definition of fluid properties and boundary conditions
+5. Turbulence-model selection
+6. Numerical solution using ANSYS Fluent
+7. Convergence monitoring
+8. Flow-field and aerodynamic post-processing
+9. Comparison with experimental data
 
-### Solver Setup
+## Computational Domain and Mesh
 
-| Setting | Description |
-|---|---|
-| Solver | ANSYS Fluent |
-| Dimension | 2D |
-| Flow | Turbulent |
-| Analysis | Steady-state |
-| Turbulence model | To be added |
-| Pressure-velocity coupling | To be added |
-| Discretization schemes | To be added |
+The computational domain was constructed around the NACA 0012 airfoil
+to represent external flow conditions. Mesh refinement was applied in
+the vicinity of the airfoil to better resolve the strong flow gradients
+and near-wall region.
 
-## Computational Mesh
+### Computational Domain
 
-The computational domain was discretized with increased mesh resolution
-around the airfoil to capture the flow gradients and near-wall behavior.
+![Computational Domain](computational_domain.png)
 
-### Mesh Overview
-
-![Computational Mesh](computational_domain.png)
 ### Near-Airfoil Mesh
 
 ![Near-Airfoil Mesh](mesh_near_airfoil.png)
 
 ## Boundary Conditions
 
-The computational domain was configured to represent the specified
-free-stream conditions around the airfoil.
+The computational domain was configured using a velocity inlet, pressure
+outlet, and no-slip wall boundaries.
 
-| Boundary | Condition |
+| Boundary | Type |
 |---|---|
-| Inlet | To be added |
-| Outlet | To be added |
-| Airfoil surface | No-slip wall |
-| Far-field / other boundaries | To be added |
+| `farfield1` | Velocity inlet |
+| `farfield2` | Pressure outlet |
+| `lower` | Wall |
+| `upper` | Wall |
+
+### Inlet Conditions
+
+The free-stream velocity was specified using velocity components corresponding
+to a magnitude of 51.45 m/s at an angle of attack of 10°.
+
+| Parameter | Value |
+|---|---:|
+| X-velocity | 50.668 m/s |
+| Y-velocity | 8.934 m/s |
+| Turbulent intensity | 5% |
+| Turbulent viscosity ratio | 10 |
+
+## Solver Setup
+
+| Setting | Configuration |
+|---|---|
+| Solver | ANSYS Fluent |
+| Dimension | 2D |
+| Flow | Turbulent |
+| Analysis | Steady-state |
+| Turbulence model | Realizable k-ε |
+| Pressure-velocity coupling | SIMPLE |
+| Gradient | Least Squares Cell Based |
+
+### Numerical Discretization
+
+| Variable | Scheme |
+|---|---|
+| Pressure | Second Order |
+| Momentum | Second Order Upwind |
+| Turbulent Kinetic Energy | First Order Upwind |
+| Turbulent Dissipation Rate | First Order Upwind |
+
+The SIMPLE pressure-velocity coupling scheme was used to solve the
+pressure-velocity field, with second-order discretization for pressure
+and momentum and first-order upwind discretization for the turbulence
+transport equations.
 
 ## Results
 
-### Velocity Distribution
+### Convergence
 
-The velocity field around the NACA 0012 airfoil is examined to identify
-flow acceleration, deceleration, and the development of the wake.
+The convergence behavior was monitored using the residual history together
+with the lift and drag coefficient histories.
 
-![Velocity Contour](results/velocity_contour.png)
+![Residual History](residuals.png)
 
-### Pressure Distribution
+![Lift Coefficient History](lift_Coefficient.png)
 
-The pressure field illustrates the pressure variation around the airfoil
-resulting from the external flow.
+![Drag Coefficient History](drag_Coefficients.png)
 
-![Pressure Contour](results/pressure_contour.png)
+### Flow Field
 
-### Surface Pressure Coefficient
+The velocity and pressure contours show the flow acceleration, pressure
+variation, and wake development around the airfoil.
 
-The surface pressure coefficient distribution is extracted along the
-airfoil surface and compared with experimental measurements.
+![Velocity Contour](Velocity_contour.png)
 
-![Pressure Coefficient Distribution](results/cp_distribution.png)
+![Pressure Contour](Pressure_contour.png)
+
+### Velocity Vectors
+
+The velocity-vector field provides a visual representation of the flow
+direction and wake structure around the airfoil.
+
+![Velocity Vectors](PARTICLEPATH.png)
+
+### Turbulent Kinetic Energy
+
+The turbulent kinetic energy distribution illustrates the regions of
+increased turbulence intensity around the airfoil and in the wake.
+
+![Turbulent Kinetic Energy](TKE.png)
+
+### Particle Path
+
+Particle paths are used to visualize the overall flow pattern and wake
+development downstream of the airfoil.
+
+![Particle Path](PARTICLEPATH.png)
 
 ## Aerodynamic Performance
 
-The aerodynamic performance of the airfoil is evaluated using the lift
-and drag coefficients obtained from the CFD solution.
+The final CFD solution produced approximately:
 
-| Quantity | CFD | Experimental |
-|---|---:|---:|
-| Lift coefficient, $C_L$ | To be added | To be added |
-| Drag coefficient, $C_D$ | To be added | To be added |
+| Quantity | CFD Result |
+|---|---:|
+| Lift coefficient, $C_L$ | ~1.03 |
+| Drag coefficient, $C_D$ | ~0.017 |
 
-## Validation
+The aerodynamic coefficients were obtained using reference values computed
+from the `farfield1` inlet condition.
 
-The numerical solution is compared with experimental data provided by NASA.
+## Surface Pressure Coefficient Validation
 
-The validation focuses on:
+The surface pressure coefficient ($C_p$) distribution obtained from the
+CFD solution was compared with experimental data for the NACA 0012 airfoil.
 
-- Surface pressure coefficient distribution
-- Lift coefficient
-- Drag coefficient
+The comparison provides a validation of the predicted pressure distribution
+over the airfoil surface.
 
-### CFD vs Experimental Pressure Distribution
-
-![Pressure Coefficient Validation](validation/cp_validation.png)
-
-### Lift and Drag Comparison
-
-![Aerodynamic Coefficient Comparison](validation/coefficient_comparison.png)
+![Pressure Coefficient Validation](Cp.png)
 
 ## Key Observations
 
-- The pressure and velocity fields around the NACA 0012 airfoil were
-  obtained from the CFD solution.
-- The surface pressure distribution was evaluated to characterize the
-  aerodynamic loading.
-- Lift and drag coefficients were extracted from the numerical solution.
-- CFD predictions were compared with experimental data to assess the
-  accuracy of the simulation.
+- The turbulent flow field around the NACA 0012 airfoil was successfully
+  obtained using ANSYS Fluent.
+- Significant velocity and pressure variations occur around the airfoil
+  due to the aerodynamic loading.
+- The wake region develops downstream of the airfoil.
+- The final aerodynamic coefficients were approximately $C_L = 1.03$
+  and $C_D = 0.017$.
+- The computed surface pressure coefficient distribution was compared
+  with experimental data to assess the CFD prediction.
 
 ## Skills Demonstrated
 
@@ -155,13 +202,15 @@ The validation focuses on:
 - Turbulence Modeling
 - Mesh Generation
 - Boundary Condition Setup
+- Numerical Methods
 - CFD Post-processing
 - Aerodynamic Force Analysis
-- Numerical Validation
+- Experimental Validation
 
 ## Software
 
 - ANSYS Fluent
+- ANSYS Workbench
 - ANSYS Meshing
 
 ## Reference
